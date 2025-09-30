@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Resume | Krupakkaran B</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- 
+    Chosen Palette: Warm Neutrals (Slate, Zinc, Amber)
+    Application Structure Plan: A responsive two-column layout. A sticky left sidebar provides constant access to navigation and contact info, enhancing user flow. The right column contains scrollable content sections. This structure allows recruiters to quickly jump to relevant information (like skills or projects) without losing context. Interaction is focused on revealing details on demand (e.g., project descriptions) and visualizing data (skills chart) to make the content more digestible and engaging than a static document.
+    Visualization & Content Choices: 
+    - Professional Summary -> Goal: Inform -> Method: Prominent text block -> Interaction: None, for directness.
+    - Technical Skills -> Goal: Compare/Inform -> Method: Horizontal Bar Chart -> Interaction: Hover tooltips for detail -> Justification: More visually engaging and quicker to scan than a list, highlights strengths effectively -> Library: Chart.js (Canvas).
+    - Projects -> Goal: Organize/Inform -> Method: Grid of cards with expandable details -> Interaction: Click to expand/collapse -> Justification: Provides a clean overview while allowing deep dives into specific projects, respecting user's time -> Library: Vanilla JS.
+    - Education & Certs -> Goal: Show Progression -> Method: Vertical Timeline -> Interaction: Hover highlights -> Justification: Intuitive for chronological data -> Method: HTML/CSS with Tailwind.
+    - Achievements -> Goal: Inform -> Method: Styled list with icons -> Interaction: Hover effects -> Justification: Visually breaks up text -> Method: HTML/CSS with Tailwind.
+    CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #1e293b; /* slate-800 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 450px;
+                max-height: 500px;
+            }
+        }
+        .active-nav {
+            color: #d97706; /* amber-600 */
+            background-color: #fef3c7; /* amber-100 */
+        }
+        .project-card-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+        <div class="lg:flex lg:space-x-12">
+            
+            <aside class="lg:w-1/3 lg:sticky lg:top-12 self-start mb-12 lg:mb-0">
+                <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
+                    <div class="text-center">
+                        <h1 class="text-3xl font-bold text-slate-900">Krupakkaran B</h1>
+                        <p class="mt-2 text-lg text-amber-600 font-medium">Cybersecurity & Software Development</p>
+                    </div>
+                    <div class="mt-6 text-sm text-slate-600 space-y-3">
+                        <p class="flex items-center"><span class="w-6 mr-2 text-center">📍</span> Chennai, India</p>
+                        <p class="flex items-center"><span class="w-6 mr-2 text-center">📞</span> +91-9894208152</p>
+                        <p class="flex items-center"><span class="w-6 mr-2 text-center">✉️</span> krupakkaran@gmail.com</p>
+                    </div>
+                    <nav id="navbar" class="mt-8">
+                        <ul class="space-y-2">
+                            <li><a href="#summary" class="block py-2 px-4 rounded-lg font-medium text-slate-700 hover:bg-amber-50 transition-colors duration-200">Summary</a></li>
+                            <li><a href="#skills" class="block py-2 px-4 rounded-lg font-medium text-slate-700 hover:bg-amber-50 transition-colors duration-200">Skills</a></li>
+                            <li><a href="#projects" class="block py-2 px-4 rounded-lg font-medium text-slate-700 hover:bg-amber-50 transition-colors duration-200">Projects</a></li>
+                            <li><a href="#journey" class="block py-2 px-4 rounded-lg font-medium text-slate-700 hover:bg-amber-50 transition-colors duration-200">My Journey</a></li>
+                            <li><a href="#achievements" class="block py-2 px-4 rounded-lg font-medium text-slate-700 hover:bg-amber-50 transition-colors duration-200">Achievements</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </aside>
+
+            <main class="lg:w-2/3">
+                <section id="summary" class="scroll-mt-20 p-8 bg-white rounded-2xl shadow-sm border border-slate-200 mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900 border-b-2 border-amber-500 pb-2">Professional Summary</h2>
+                    <div class="mt-4 text-slate-700 leading-relaxed">
+                        <p>
+                            Aspiring Cybersecurity and Software Development Professional with a strong foundation in Python, Java, SQL, Cybersecurity, and Cloud technologies. Proven ability in secure application development, threat analysis, and implementing cloud-based solutions. Experienced in developing full-stack applications and IoT systems, with hands-on project work in OTP authentication, secure file sharing, malware analysis, and multi-band wireless signal analysis. Committed to building secure systems and raising cybersecurity awareness.
+                        </p>
+                    </div>
+                </section>
+
+                <section id="skills" class="scroll-mt-20 p-8 bg-white rounded-2xl shadow-sm border border-slate-200 mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900 border-b-2 border-amber-500 pb-2">Technical Skills</h2>
+                    <div class="mt-4 text-slate-700">
+                      <p class="mb-6">This chart provides a visual representation of my key technical abilities, grouped by category. You can hover over any bar to see the specific skill and my self-assessed proficiency level, which reflects both academic knowledge and hands-on project experience.</p>
+                      <div class="chart-container">
+                          <canvas id="skillsChart"></canvas>
+                      </div>
+                    </div>
+                </section>
+
+                <section id="projects" class="scroll-mt-20 p-8 bg-white rounded-2xl shadow-sm border border-slate-200 mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900 border-b-2 border-amber-500 pb-2">Projects</h2>
+                    <div class="mt-4 text-slate-700">
+                        <p class="mb-6">Here are some of the key projects I've developed. Each demonstrates practical application of my technical skills in creating functional, secure, and innovative solutions. Click on any project card to expand it and view more details about its features and implementation.</p>
+                        <div id="project-list" class="space-y-6">
+                        </div>
+                    </div>
+                </section>
+
+                <section id="journey" class="scroll-mt-20 p-8 bg-white rounded-2xl shadow-sm border border-slate-200 mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900 border-b-2 border-amber-500 pb-2">My Journey: Education & Certifications</h2>
+                     <div class="mt-4 text-slate-700">
+                       <p class="mb-8">This timeline illustrates my academic and professional development path, from my foundational education to the specialized certifications that have deepened my expertise in cybersecurity and system administration.</p>
+                        <div class="relative border-l-2 border-amber-200 ml-4">
+                            <div class="mb-8 ml-8">
+                                <span class="absolute flex items-center justify-center w-8 h-8 bg-amber-200 rounded-full -left-4 ring-4 ring-white">🎓</span>
+                                <h3 class="text-lg font-semibold text-slate-800">M.Tech in CS - Cybersecurity & Digital Forensics</h3>
+                                <p class="text-sm font-normal text-slate-500">SRM Institute of Science and Technology | 2022 – Present</p>
+                            </div>
+                            <div class="mb-8 ml-8">
+                                <span class="absolute flex items-center justify-center w-8 h-8 bg-amber-200 rounded-full -left-4 ring-4 ring-white">📜</span>
+                                <h3 class="text-lg font-semibold text-slate-800">Red Hat Certified System Administrator (RHCSA)</h3>
+                                <p class="text-sm font-normal text-slate-500">Professional Certification</p>
+                            </div>
+                            <div class="mb-8 ml-8">
+                                <span class="absolute flex items-center justify-center w-8 h-8 bg-amber-200 rounded-full -left-4 ring-4 ring-white">📜</span>
+                                <h3 class="text-lg font-semibold text-slate-800">AWS Academy Graduate – Machine Learning Foundations</h3>
+                               <p class="text-sm font-normal text-slate-500">Professional Certification</p>
+                            </div>
+                            <div class="mb-8 ml-8">
+                                <span class="absolute flex items-center justify-center w-8 h-8 bg-amber-200 rounded-full -left-4 ring-4 ring-white">📜</span>
+                                <h3 class="text-lg font-semibold text-slate-800">TATA STRIVE – Cybersecurity for Beginners</h3>
+                                <p class="text-sm font-normal text-slate-500">Professional Certification</p>
+                            </div>
+                             <div class="ml-8">
+                                <span class="absolute flex items-center justify-center w-8 h-8 bg-amber-200 rounded-full -left-4 ring-4 ring-white">🎓</span>
+                                <h3 class="text-lg font-semibold text-slate-800">Higher Secondary (12th Grade)</h3>
+                                <p class="text-sm font-normal text-slate-500">Paavai Vidhyashram (CBSE) | 2021–2022</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="achievements" class="scroll-mt-20 p-8 bg-white rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-bold text-slate-900 border-b-2 border-amber-500 pb-2">Achievements & Interests</h2>
+                    <div class="mt-6 text-slate-700">
+                       <p class="mb-6">Beyond my academic and project work, I'm passionate about continuous learning and community engagement in the tech space. These activities reflect my dedication to growing my skills and sharing knowledge with others.</p>
+                        <ul class="space-y-4">
+                            <li class="flex items-start"><span class="mr-3 text-amber-600"> researching </span><span>Conducted academic research in forensics and malware analysis.</span></li>
+                            <li class="flex items-start"><span class="mr-3 text-amber-600"> presenting </span><span>Delivered cybersecurity awareness sessions to peers.</span></li>
+                            <li class="flex items-start"><span class="mr-3 text-amber-600"> competing </span><span>Actively exploring cybersecurity challenges and CTFs (Capture The Flags).</span></li>
+                            <li class="flex items-start"><span class="mr-3 text-amber-600"> analyzing </span><span>Exploring wireless security and signal analysis using the ESP32DIV toolkit.</span></li>
+                            <li class="flex items-start"><span class="mr-3 text-amber-600"> writing </span><span>Blogging tech content on GitHub, focusing on digital forensics and ethical hacking.</span></li>
+                        </ul>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+<script>
+    const skillsData = {
+        labels: [
+            'Python', 'Java', 'SQL', 'Django', 'Flask', 
+            'Malware Analysis', 'Digital Forensics', 'Network Security',
+            'Wireless Analysis (ESP32DIV)', 'Wireshark', 'Burp Suite'
+        ],
+        datasets: [{
+            label: 'Proficiency',
+            data: [90, 80, 85, 85, 80, 88, 82, 85, 92, 80, 78],
+            backgroundColor: 'rgba(217, 119, 6, 0.2)', /* amber-600 with opacity */
+            borderColor: 'rgba(217, 119, 6, 1)', /* amber-600 */
+            borderWidth: 1,
+            borderRadius: 4,
+            borderSkipped: false,
+        }]
+    };
+    
+    const projectsData = [
+        {
+            title: 'Ignitz – Freelancer Collaboration Platform',
+            technologies: ['Django', 'MySQL', 'JavaScript', 'HTML/CSS'],
+            description: 'Developed a full-stack, role-based platform connecting entrepreneurs with freshers for project collaboration. Key features include a secure, role-based login system with OTP verification and comprehensive modules for project creation, application submission, and milestone tracking to manage project lifecycle effectively.'
+        },
+        {
+            title: 'Secure File Sharing System',
+            technologies: ['Python', 'Flask', 'Cryptography', 'Cloudflare'],
+            description: 'Designed and built a web-based file upload and download system focused on security. It features optional, on-the-fly file encryption upon upload and decryption on download, ensuring data privacy. The system is exposed to the internet securely using a Cloudflare public tunnel.'
+        },
+        {
+            title: 'Wireless Analysis & Protocol Spoofing (ESP32DIV) (Ongoing)',
+            technologies: ['ESP32DIV', 'Wi-Fi', 'BLE', 'Sub-GHz'],
+            description: 'Currently engaged in a hands-on project utilizing the ESP32DIV multi-band wireless toolkit for advanced wireless security testing. The focus is on practical application of signal analysis, protocol spoofing, and vulnerability assessment across Wi-Fi, BLE, and Sub-GHz frequency bands to understand and mitigate wireless threats.'
+        },
+        {
+            title: 'OTP Login System (with Redis)',
+            technologies: ['Django', 'Redis', 'Email SMTP'],
+            description: 'Created a robust, role-based login system that enhances security with One-Time Password (OTP) verification sent via email. The system leverages Redis for high-performance session management and ensures users are correctly redirected based on their assigned roles after successful authentication.'
+        },
+        {
+            title: 'Smart Home Automation – \'Namaste\'',
+            technologies: ['Arduino', 'NodeMCU', 'MQTT', 'Google Assistant'],
+            description: 'An IoT project designed to automate home lighting and manage a fish tank environment. The system enables voice control of lights via Google Assistant and uses sensors to trigger water pump automation, maintaining optimal water levels in the fish tank.'
+        }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const skillsChartCtx = document.getElementById('skillsChart').getContext('2d');
+        new Chart(skillsChartCtx, {
+            type: 'bar',
+            data: skillsData,
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b', /* slate-800 */
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 12 },
+                        cornerRadius: 4,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return `Proficiency: ${context.raw}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                           display: false
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                         ticks: {
+                            font: {
+                                size: 14,
+                                weight: 500
+                            },
+                            color: '#334155' // slate-700
+                        }
+                    }
+                }
+            }
+        });
+        
+        const projectList = document.getElementById('project-list');
+        projectsData.forEach((project, index) => {
+            const techBadges = project.technologies.map(tech => 
+                `<span class="inline-block bg-amber-100 text-amber-800 text-xs font-medium mr-2 mb-2 px-2.5 py-0.5 rounded-full">${tech}</span>`
+            ).join('');
+
+            const projectCard = document.createElement('div');
+            projectCard.className = 'border border-slate-200 rounded-xl overflow-hidden transition-shadow hover:shadow-lg';
+            projectCard.innerHTML = `
+                <div class="p-5 cursor-pointer bg-slate-50 flex justify-between items-center" data-project-id="${index}">
+                    <h3 class="text-lg font-semibold text-slate-800">${project.title}</h3>
+                    <span class="transform transition-transform duration-300">▼</span>
+                </div>
+                <div class="project-card-details" id="details-${index}">
+                    <div class="p-5 border-t border-slate-200">
+                        <p class="text-slate-600 mb-4">${project.description}</p>
+                        <div class="flex flex-wrap">${techBadges}</div>
+                    </div>
+                </div>
+            `;
+            projectList.appendChild(projectCard);
+        });
+        
+        projectList.addEventListener('click', (e) => {
+            const header = e.target.closest('[data-project-id]');
+            if (header) {
+                const projectId = header.dataset.projectId;
+                const details = document.getElementById(`details-${projectId}`);
+                const arrow = header.querySelector('span');
+
+                if (details.style.maxHeight && details.style.maxHeight !== '0px') {
+                    details.style.maxHeight = '0px';
+                    arrow.style.transform = 'rotate(0deg)';
+                } else {
+                    document.querySelectorAll('.project-card-details').forEach(d => d.style.maxHeight = '0px');
+                    document.querySelectorAll('[data-project-id] span').forEach(a => a.style.transform = 'rotate(0deg)');
+                    
+                    details.style.maxHeight = details.scrollHeight + 'px';
+                    arrow.style.transform = 'rotate(180deg)';
+                }
+            }
+        });
+
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('#navbar a');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active-nav');
+                        if (link.getAttribute('href').substring(1) === entry.target.id) {
+                            link.classList.add('active-nav');
+                        }
+                    });
+                }
+            });
+        }, { rootMargin: '-30% 0px -70% 0px' });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+    });
+</script>
+
+</body>
+</html>
